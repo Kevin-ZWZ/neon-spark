@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import AuthModal from "./AuthModal";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -71,12 +72,7 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => signIn()}
-              className="text-xs px-4 py-1.5 rounded-full border border-purple-500/30 text-purple-300/80 hover:bg-purple-500/10 transition-all font-heading"
-            >
-              Sign In
-            </button>
+            <AuthModal />
           )}
         </div>
 
@@ -131,15 +127,12 @@ export default function Navbar() {
                   onClick={() => { signOut(); setMobileOpen(false); }}
                   className="text-sm text-white/50 hover:text-white transition-colors text-center"
                 >
-                  Sign Out
+                  Sign Out ({session.user.email?.split("@")[0]})
                 </button>
               ) : (
-                <button
-                  onClick={() => { signIn(); setMobileOpen(false); }}
-                  className="text-sm text-purple-300/80 hover:text-purple-300 transition-colors text-center"
-                >
-                  Sign In
-                </button>
+                <div onClick={() => setMobileOpen(false)} className="text-center">
+                  <AuthModal />
+                </div>
               )}
             </div>
           </motion.div>
