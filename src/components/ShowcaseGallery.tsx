@@ -98,8 +98,8 @@ function NeonTokyoScene() {
                 y={y + 4 + k * 8}
                 width="2"
                 height="3"
-                fill={Math.random() > 0.4 ? "#ff6eb4" : "#00f0ff"}
-                opacity={0.3 + Math.random() * 0.3}
+                fill={(j + k) % 3 === 0 ? "#00f0ff" : "#ff6eb4"}
+                opacity={0.3 + ((j * 3 + k * 7) % 10) / 30}
               />
             ))
           )}
@@ -242,7 +242,7 @@ function SamuraiScene() {
         [30, 40], [170, 50], [50, 150], [140, 160], [20, 100], [180, 120],
         [70, 30], [130, 170], [160, 30], [40, 170],
       ].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r="1.5" fill="#ef4444" opacity={0.2 + Math.random() * 0.3} />
+        <circle key={i} cx={x} cy={y} r="1.5" fill="#ef4444" opacity={0.2 + (i * 7 % 10) / 30} />
       ))}
 
       {/* Katakana text */}
@@ -320,17 +320,17 @@ function NeonRainScene() {
 
       {/* Rain streaks */}
       {Array.from({ length: 30 }).map((_, i) => {
-        const x = Math.random() * 200;
-        const y = Math.random() * 200;
-        const len = 8 + Math.random() * 12;
+        const x = ((i * 37) % 19) * 10 + 5;
+        const y = ((i * 53) % 17) * 12;
+        const len = 8 + ((i * 13) % 12);
         return (
           <line
             key={i}
             x1={x} y1={y}
             x2={x + 1} y2={y + len}
-            stroke={Math.random() > 0.5 ? "#8b5cf6" : "#ec4899"}
+            stroke={i % 3 === 0 ? "#8b5cf6" : "#ec4899"}
             strokeWidth="0.5"
-            opacity={0.15 + Math.random() * 0.25}
+            opacity={0.15 + ((i * 7) % 10) / 40}
           />
         );
       })}
@@ -376,7 +376,7 @@ function DataStreamScene() {
           <g key={col}>
             {Array.from({ length: 10 }).map((_, row) => {
               const y = 5 + row * 20;
-              const char = chars[Math.floor(Math.random() * chars.length)];
+              const char = chars[(row * 7 + col * 13) % chars.length];
               const alpha = 0.08 + ((row * 7 + col * 11) % 20) / 100;
               return (
                 <text
@@ -404,11 +404,11 @@ function DataStreamScene() {
       {Array.from({ length: 15 }).map((_, i) => (
         <circle
           key={i}
-          cx={10 + Math.random() * 180}
-          cy={10 + Math.random() * 180}
+          cx={10 + ((i * 43) % 18) * 10}
+          cy={10 + ((i * 29) % 17) * 10}
           r={1}
           fill="#00f0ff"
-          opacity={0.1 + Math.random() * 0.2}
+          opacity={0.1 + ((i * 11) % 10) / 50}
         />
       ))}
 
