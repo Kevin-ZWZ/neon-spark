@@ -1,15 +1,25 @@
-import { Resend } from "resend";
+const RESEND_KEY = process.env.AUTH_RESEND_KEY;
 
-const resend = new Resend(process.env.AUTH_RESEND_KEY || "re_placeholder");
+// Resend requires a verified domain. If neonspark.dev isn't verified,
+// use the default Resend sandbox domain for testing.
+const FROM_ADDRESS = process.env.RESEND_FROM || "NEON SPARK <onboarding@resend.dev>";
 
 export async function sendWaitlistConfirmation(email: string) {
+  if (!RESEND_KEY || RESEND_KEY === "re_placeholder") {
+    console.log(`📧 [DEV] Welcome email skipped for ${email} (no Resend key)`);
+    return;
+  }
+
   try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(RESEND_KEY);
+
     await resend.emails.send({
-      from: "NEON SPARK <noreply@neonspark.dev>",
+      from: FROM_ADDRESS,
       to: email,
       subject: "You're on the NEON SPARK waitlist!",
       html: `
-        <div style="background:#000;color:#fff;font-family:Orbitron,sans-serif;padding:40px 20px;text-align:center;">
+        <div style="background:#000;color:#fff;font-family:monospace;padding:40px 20px;text-align:center;">
           <h1 style="font-size:24px;background:linear-gradient(135deg,#00f0ff,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
             NEON SPARK
           </h1>
