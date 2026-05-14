@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSoundCtx } from "./SoundProvider";
 
 const styleTags = [
   "Neon Cyberpunk",
@@ -118,6 +119,7 @@ export default function AIGeneratorPanel() {
   const [history, setHistory] = useState<SavedPalette[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [cssCopied, setCssCopied] = useState(false);
+  const { play } = useSoundCtx();
 
   // Load history from localStorage on mount
   useEffect(() => {
@@ -154,6 +156,7 @@ export default function AIGeneratorPanel() {
 
   const handleGenerate = useCallback(() => {
     if (isGenerating) return;
+    play("generate");
     setIsGenerating(true);
     setPalette(null);
     setTimeout(() => {
@@ -166,6 +169,7 @@ export default function AIGeneratorPanel() {
 
   // ── Random inspiration ──
   const handleRandom = useCallback(() => {
+    play("whoosh");
     const keyword = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
     const count = 1 + Math.floor(Math.random() * 3);
     const shuffled = [...styleTags].sort(() => Math.random() - 0.5);
@@ -192,7 +196,7 @@ export default function AIGeneratorPanel() {
         try { localStorage.setItem("neon-spark-history", JSON.stringify(updated)); } catch {}
       }, 500);
     }, 50);
-  }, [history]);
+  }, [history, play]);
 
   // ── Copy CSS variables ──
   const copyCssVars = useCallback(() => {
@@ -203,8 +207,9 @@ export default function AIGeneratorPanel() {
     const css = `:root {\n${vars}\n}`;
     navigator.clipboard.writeText(css);
     setCssCopied(true);
+    play("success");
     setTimeout(() => setCssCopied(false), 1500);
-  }, [palette]);
+  }, [palette, play]);
 
   // ── Restore history item ──
   const restoreHistory = useCallback((item: SavedPalette) => {
@@ -227,8 +232,9 @@ export default function AIGeneratorPanel() {
   const copyHex = useCallback((hex: string, index: number) => {
     navigator.clipboard.writeText(hex);
     setCopiedIndex(index);
+    play("pop");
     setTimeout(() => setCopiedIndex(null), 1200);
-  }, []);
+  }, [play]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
