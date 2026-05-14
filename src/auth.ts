@@ -7,13 +7,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(getDb()),
   providers: [
     Resend({
-      from: "NEON SPARK <noreply@neonspark.dev>",
+      from: process.env.RESEND_FROM || "NEON SPARK <onboarding@resend.dev>",
     }),
   ],
-  pages: {
-    signIn: "/",
-    verifyRequest: "/",
-  },
   callbacks: {
     session({ session, user }) {
       if (session.user) {
