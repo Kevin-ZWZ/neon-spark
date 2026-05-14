@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { waitlist } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { sendWaitlistConfirmation } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -20,6 +21,9 @@ export async function POST(request: Request) {
     }
 
     await db.insert(waitlist).values({ email });
+
+    // Send welcome email (non-blocking)
+    sendWaitlistConfirmation(email);
 
     return NextResponse.json({ message: "Successfully joined the waitlist!" }, { status: 201 });
   } catch (error) {

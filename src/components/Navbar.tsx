@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -12,6 +13,7 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -35,10 +37,10 @@ export default function Navbar() {
           href="#"
           className="text-xl font-bold tracking-[0.08em] neon-gradient-text font-heading"
         >
-          AURA
+          NEON SPARK
         </a>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6">
           {links.map((link) => (
             <a
               key={link.label}
@@ -54,6 +56,28 @@ export default function Navbar() {
           >
             Generate
           </a>
+
+          {/* Auth */}
+          {session?.user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-white/40 font-heading">
+                {session.user.email?.split("@")[0]}
+              </span>
+              <button
+                onClick={() => signOut()}
+                className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-all font-heading"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => signIn()}
+              className="text-xs px-4 py-1.5 rounded-full border border-purple-500/30 text-purple-300/80 hover:bg-purple-500/10 transition-all font-heading"
+            >
+              Sign In
+            </button>
+          )}
         </div>
 
         <button
@@ -102,6 +126,21 @@ export default function Navbar() {
               >
                 Generate
               </a>
+              {session?.user ? (
+                <button
+                  onClick={() => { signOut(); setMobileOpen(false); }}
+                  className="text-sm text-white/50 hover:text-white transition-colors text-center"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <button
+                  onClick={() => { signIn(); setMobileOpen(false); }}
+                  className="text-sm text-purple-300/80 hover:text-purple-300 transition-colors text-center"
+                >
+                  Sign In
+                </button>
+              )}
             </div>
           </motion.div>
         )}
