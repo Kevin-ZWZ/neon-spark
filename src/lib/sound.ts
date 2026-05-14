@@ -4,8 +4,9 @@ type SoundType = "click" | "hover" | "generate" | "success" | "pop" | "whoosh";
 
 let ctx: AudioContext | null = null;
 let _muted = false;
+let _initialized = false;
 
-function getCtx(): AudioContext | null {
+function initCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!ctx) {
     try {
@@ -17,6 +18,27 @@ function getCtx(): AudioContext | null {
   if (ctx.state === "suspended") {
     ctx.resume();
   }
+  return ctx;
+}
+
+// Auto-init on first user interaction (click, touch, keydown)
+if (typeof window !== "undefined") {
+  const handler = () => {
+    if (!_initialized) {
+      _initialized = true;
+      initCtx();
+      document.removeEventListener("click", handler);
+      document.removeEventListener("touchstart", handler);
+      document.removeEventListener("keydown", handler);
+    }
+  };
+  document.addEventListener("click", handler, { once: true });
+  document.addEventListener("touchstart", handler, { once: true });
+  document.addEventListener("keydown", handler, { once: true });
+}
+
+function getCtx(): AudioContext | null {
+  if (!ctx) initCtx();
   return ctx;
 }
 
