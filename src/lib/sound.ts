@@ -159,7 +159,47 @@ function riser(c: AudioContext, t: number, dur: number) {
 // ── Event Sounds ────────────────────────────────────────────
 
 function playHover(c: AudioContext) {
-  hat(c, c.currentTime, 0.6); // Subtle trap hat tick
+  const t = c.currentTime;
+  // Q弹 bass pluck — frequency drops then bounces like a spring
+  const osc = c.createOscillator();
+  const g = c.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(400, t);
+  osc.frequency.exponentialRampToValueAtTime(90, t + 0.04);
+  osc.frequency.setValueAtTime(90, t + 0.04);
+  osc.frequency.linearRampToValueAtTime(120, t + 0.06);  // bounce up
+  osc.frequency.linearRampToValueAtTime(95, t + 0.09);   // settle
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.22, t + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+  osc.connect(g); g.connect(c.destination);
+  osc.start(t); osc.stop(t + 0.15);
+
+  // Sub layer — 808 body
+  const sub = c.createOscillator();
+  const sg = c.createGain();
+  sub.type = "sine";
+  sub.frequency.setValueAtTime(60, t);
+  sub.frequency.exponentialRampToValueAtTime(30, t + 0.08);
+  sg.gain.setValueAtTime(0.28, t);
+  sg.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+  sub.connect(sg); sg.connect(c.destination);
+  sub.start(t); sub.stop(t + 0.12);
+
+  // Transient snap for tactile feel
+  const buf = c.createBuffer(1, c.sampleRate * 0.01, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < buf.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / buf.length);
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  const hp = c.createBiquadFilter();
+  hp.type = "highpass";
+  hp.frequency.setValueAtTime(3000, t);
+  const ng = c.createGain();
+  ng.gain.setValueAtTime(0.08, t);
+  ng.gain.exponentialRampToValueAtTime(0.001, t + 0.008);
+  src.connect(hp); hp.connect(ng); ng.connect(c.destination);
+  src.start(t); src.stop(t + 0.01);
 }
 
 function playClick(c: AudioContext) {
