@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import AuthModal from "./AuthModal";
-import { useSoundCtx } from "./SoundProvider";
+import { playSound, isMuted, toggleMute as toggleGlobalMute } from "@/lib/sound";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -16,7 +16,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: session } = useSession();
-  const { play, muted, toggleMute } = useSoundCtx();
+  const [muted, setMuted] = useState(isMuted());
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -48,7 +48,7 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              onMouseEnter={() => play("hover")}
+              onMouseEnter={() => playSound("hover")}
               className="text-sm text-white/60 hover:text-white transition-colors duration-300 neon-underline font-heading"
             >
               {link.label}
@@ -56,8 +56,8 @@ export default function Navbar() {
           ))}
           <a
             href="#generate"
-            onMouseEnter={() => play("hover")}
-            onClick={() => play("click")}
+            onMouseEnter={() => playSound("hover")}
+            onClick={() => playSound("click")}
             className="text-sm px-5 py-2 rounded-full bg-white text-black font-medium hover:bg-white/90 transition-colors neon-border-pulse font-heading"
           >
             Generate
@@ -65,8 +65,8 @@ export default function Navbar() {
 
           {/* Mute toggle */}
           <button
-            onClick={toggleMute}
-            onMouseEnter={() => play("hover")}
+            onClick={() => { const m = toggleGlobalMute(); setMuted(m); }}
+            onMouseEnter={() => playSound("hover")}
             className="w-7 h-7 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center text-white/30 hover:text-white/60 hover:border-white/20 transition-all shrink-0"
             title={muted ? "Unmute" : "Mute"}
           >
