@@ -57,11 +57,17 @@ function TestimonialCard({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4 }}
+      transition={{
+        type: "spring",
+        stiffness: 70,
+        damping: 18,
+        mass: 0.7,
+        delay: index * 0.05,
+      }}
+      whileHover={{ y: -5 }}
       className="relative rounded-2xl border border-white/[0.05] p-6 transition-all duration-500 group"
       style={{
         background: `radial-gradient(ellipse at 0% 0%, ${t.gradient.split(" ")[0]}33, transparent 70%), rgba(255,255,255,0.015)`,
@@ -103,10 +109,15 @@ export default function Testimonials() {
     >
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{
+            type: "spring",
+            stiffness: 60,
+            damping: 20,
+            mass: 0.8,
+          }}
           className="text-center mb-16 space-y-4"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/20 bg-purple-500/5 text-xs text-purple-300/80 mb-4">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Orbitron, Rajdhani } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,10 +12,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const orbitron = Orbitron({
+  variable: "--font-cyber-heading",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const rajdhani = Rajdhani({
+  variable: "--font-cyber-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "AURA — AI-Powered Cyberpunk Design Generator",
+  title: "NEON SPARK — AI Cyberpunk Color Palette Generator",
   description:
-    "Generate future aesthetics. AI-powered cyberpunk design & color palette generator. Create cinematic, neon-infused visuals in seconds.",
+    "Generate cyberpunk color palettes with AI. NEON SPARK creates cinematic, neon-infused color schemes in seconds.",
   keywords: [
     "AI design",
     "cyberpunk",
@@ -25,9 +38,9 @@ export const metadata: Metadata = {
     "neon",
   ],
   openGraph: {
-    title: "AURA — AI Futuristic Design Generator",
+    title: "NEON SPARK — AI Cyberpunk Palette Generator",
     description:
-      "Generate future aesthetics with AI. Cyberpunk design & color palette generator.",
+      "Generate cyberpunk color palettes with AI. Neon-infused color schemes in seconds.",
     type: "website",
   },
 };
@@ -40,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${rajdhani.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-black text-white">{children}</body>
     </html>

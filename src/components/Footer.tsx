@@ -58,7 +58,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 gap-12 mb-12">
           {/* Brand */}
           <div className="space-y-4">
-            <a href="#" className="text-xl font-bold tracking-tight neon-gradient-text">
+            <a href="#" className="text-xl font-bold tracking-[0.08em] neon-gradient-text font-heading">
               AURA
             </a>
             <p className="text-sm text-white/30 max-w-sm leading-relaxed">

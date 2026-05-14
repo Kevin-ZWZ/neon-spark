@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const links = [
   { label: "Features", href: "#features" },
   { label: "Showcase", href: "#showcase" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Waitlist", href: "#waitlist" },
 ];
 
 export default function Navbar() {
@@ -33,7 +33,7 @@ export default function Navbar() {
       <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
         <a
           href="#"
-          className="text-xl font-bold tracking-tight neon-gradient-text"
+          className="text-xl font-bold tracking-[0.08em] neon-gradient-text font-heading"
         >
           AURA
         </a>
@@ -43,14 +43,14 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              className="text-sm text-white/60 hover:text-white transition-colors duration-300"
+              className="text-sm text-white/60 hover:text-white transition-colors duration-300 neon-underline font-heading"
             >
               {link.label}
             </a>
           ))}
           <a
             href="#generate"
-            className="text-sm px-5 py-2 rounded-full bg-white text-black font-medium hover:bg-white/90 transition-colors"
+            className="text-sm px-5 py-2 rounded-full bg-white text-black font-medium hover:bg-white/90 transition-colors neon-border-pulse font-heading"
           >
             Generate
           </a>

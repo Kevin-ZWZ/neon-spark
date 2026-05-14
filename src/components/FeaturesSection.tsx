@@ -115,11 +115,17 @@ function FeatureCard({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -6 }}
+      transition={{
+        type: "spring",
+        stiffness: 70,
+        damping: 18,
+        mass: 0.7,
+        delay: index * 0.08,
+      }}
+      whileHover={{ y: -8 }}
       className="group relative rounded-2xl border border-white/[0.06] p-8 transition-all duration-500"
       style={{
         background: `radial-gradient(ellipse at 30% 0%, ${feature.gradient.split(" ")[0]}33, transparent 60%), rgba(255,255,255,0.02)`,
@@ -134,7 +140,7 @@ function FeatureCard({
           {feature.icon}
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-white/90 tracking-tight mb-2">
+          <h3 className="text-lg font-semibold text-white/90 tracking-tight mb-2 font-heading">
             {feature.title}
           </h3>
           <p className="text-sm text-white/40 leading-relaxed">
@@ -164,10 +170,15 @@ export default function FeaturesSection() {
     >
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{
+            type: "spring",
+            stiffness: 60,
+            damping: 20,
+            mass: 0.8,
+          }}
           className="text-center mb-16 space-y-4"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">

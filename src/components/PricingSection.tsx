@@ -68,11 +68,17 @@ function PricingCard({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -6 }}
+      transition={{
+        type: "spring",
+        stiffness: 70,
+        damping: 18,
+        mass: 0.7,
+        delay: index * 0.1,
+      }}
+      whileHover={{ y: -8 }}
       className={`relative rounded-2xl p-8 flex flex-col ${
         plan.recommended
           ? "border border-purple-500/30 bg-purple-500/[0.02]"
@@ -84,14 +90,14 @@ function PricingCard({
           : "none",
       }}
     >
-      {plan.recommended && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-xs font-medium text-purple-300">
+        {plan.recommended && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-xs font-medium text-purple-300 neon-border-pulse font-heading">
           Recommended
         </div>
       )}
 
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-white/90 mb-1">
+        <h3 className="text-lg font-semibold text-white/90 mb-1 font-heading">
           {plan.name}
         </h3>
         <div className="flex items-baseline gap-1 mt-3">
@@ -161,10 +167,15 @@ export default function PricingSection() {
     >
       <div className="mx-auto max-w-5xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{
+            type: "spring",
+            stiffness: 60,
+            damping: 20,
+            mass: 0.8,
+          }}
           className="text-center mb-16 space-y-4"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
