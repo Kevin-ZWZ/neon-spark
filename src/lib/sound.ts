@@ -160,46 +160,84 @@ function riser(c: AudioContext, t: number, dur: number) {
 
 function playHover(c: AudioContext) {
   const t = c.currentTime;
-  // Q弹 bass pluck — frequency drops then bounces like a spring
-  const osc = c.createOscillator();
-  const g = c.createGain();
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(400, t);
-  osc.frequency.exponentialRampToValueAtTime(90, t + 0.04);
-  osc.frequency.setValueAtTime(90, t + 0.04);
-  osc.frequency.linearRampToValueAtTime(120, t + 0.06);  // bounce up
-  osc.frequency.linearRampToValueAtTime(95, t + 0.09);   // settle
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.22, t + 0.005);
-  g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-  osc.connect(g); g.connect(c.destination);
-  osc.start(t); osc.stop(t + 0.15);
+  // FM synth — auto-tune style electronic tone
+  // Carrier frequency with modulator creating metallic harmonics
+  const carrier = c.createOscillator();
+  const modulator = c.createOscillator();
+  const modGain = c.createGain();
+  const carrierGain = c.createGain();
 
-  // Sub layer — 808 body
+  carrier.type = "sine";
+  modulator.type = "sine";
+
+  // Auto-tune glide: slides rapidly then settles with slight vibrato
+  const baseFreq = 220;
+  carrier.frequency.setValueAtTime(baseFreq * 1.5, t);
+  carrier.frequency.exponentialRampToValueAtTime(baseFreq, t + 0.02);
+
+  // Modulator creates that metallic/electronic sheen
+  modulator.frequency.setValueAtTime(550, t);
+  modulator.frequency.linearRampToValueAtTime(400, t + 0.03);
+  modGain.gain.setValueAtTime(80, t);
+  modGain.gain.exponentialRampToValueAtTime(10, t + 0.08);
+
+  // Subtle pitch wobble (auto-tune artifacts)
+  const lfo = c.createOscillator();
+  const lfoGain = c.createGain();
+  lfo.type = "sine";
+  lfo.frequency.setValueAtTime(6, t);
+  lfoGain.gain.setValueAtTime(3, t);
+  lfoGain.gain.linearRampToValueAtTime(0, t + 0.1);
+  lfo.connect(lfoGain);
+  lfoGain.connect(carrier.frequency);
+
+  // Envelope
+  carrierGain.gain.setValueAtTime(0, t);
+  carrierGain.gain.linearRampToValueAtTime(0.18, t + 0.003);
+  carrierGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+
+  // Connect FM: modulator → modGain → carrier.frequency
+  modulator.connect(modGain);
+  modGain.connect(carrier.frequency);
+
+  // Add slight analog warmth via detuned second carrier
+  const warm = c.createOscillator();
+  const warmG = c.createGain();
+  warm.type = "sine";
+  warm.frequency.setValueAtTime(baseFreq * 1.49, t);
+  warm.frequency.exponentialRampToValueAtTime(baseFreq * 0.997, t + 0.02);
+  warmG.gain.setValueAtTime(0, t);
+  warmG.gain.linearRampToValueAtTime(0.08, t + 0.003);
+  warmG.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  warm.connect(warmG); warmG.connect(c.destination);
+
+  carrier.connect(carrierGain); carrierGain.connect(c.destination);
+  carrier.start(t); carrier.stop(t + 0.12);
+  modulator.start(t); modulator.stop(t + 0.1);
+  lfo.start(t); lfo.stop(t + 0.1);
+  warm.start(t); warm.stop(t + 0.1);
+
+  // 808 sub layer — deep body
   const sub = c.createOscillator();
   const sg = c.createGain();
   sub.type = "sine";
-  sub.frequency.setValueAtTime(60, t);
-  sub.frequency.exponentialRampToValueAtTime(30, t + 0.08);
-  sg.gain.setValueAtTime(0.28, t);
+  sub.frequency.setValueAtTime(55, t);
+  sub.frequency.exponentialRampToValueAtTime(35, t + 0.07);
+  sg.gain.setValueAtTime(0.25, t);
   sg.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
   sub.connect(sg); sg.connect(c.destination);
   sub.start(t); sub.stop(t + 0.12);
 
-  // Transient snap for tactile feel
-  const buf = c.createBuffer(1, c.sampleRate * 0.01, c.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < buf.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / buf.length);
-  const src = c.createBufferSource();
-  src.buffer = buf;
-  const hp = c.createBiquadFilter();
-  hp.type = "highpass";
-  hp.frequency.setValueAtTime(3000, t);
-  const ng = c.createGain();
-  ng.gain.setValueAtTime(0.08, t);
-  ng.gain.exponentialRampToValueAtTime(0.001, t + 0.008);
-  src.connect(hp); hp.connect(ng); ng.connect(c.destination);
-  src.start(t); src.stop(t + 0.01);
+  // Electronic tick (very short high sine for attack)
+  const tick = c.createOscillator();
+  const tg = c.createGain();
+  tick.type = "sine";
+  tick.frequency.setValueAtTime(3500, t);
+  tick.frequency.exponentialRampToValueAtTime(500, t + 0.004);
+  tg.gain.setValueAtTime(0.06, t);
+  tg.gain.exponentialRampToValueAtTime(0.001, t + 0.006);
+  tick.connect(tg); tg.connect(c.destination);
+  tick.start(t); tick.stop(t + 0.006);
 }
 
 function playClick(c: AudioContext) {
